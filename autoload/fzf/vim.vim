@@ -897,10 +897,16 @@ endfunction
 
 " ag command suffix, [spec (dict)], [fullscreen (bool)]
 function! fzf#vim#ag_raw(command_suffix, ...)
-  if !executable('ag')
-    return s:warn('ag is not found')
+  let ag_command = "ag" 
+
+  if g:os == "Windows"
+    let ag_command = expand("$HOME/vimfiles/ag/ag.exe")
   endif
-  return call('fzf#vim#grep', extend(['ag --nogroup --column --color '.a:command_suffix, 1], a:000))
+
+  if !executable(ag_command)
+    return s:warn(ag_command.' is not found')
+  endif
+  return call('fzf#vim#grep', extend([ag_command.' --nogroup --column --color '.a:command_suffix, 1], a:000))
 endfunction
 
 function! s:grep_multi_line(opts)
